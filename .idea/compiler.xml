@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Java_EE_STC23" target="1.5" />
+      <module name="Java_EE_STC23" target="8" />
       <module name="javaeestc23" target="1.5" />
     </bytecodeTargetLevel>
   </component>
