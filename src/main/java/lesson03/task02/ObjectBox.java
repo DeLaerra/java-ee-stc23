@@ -2,7 +2,12 @@ package lesson03.task02;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Класс для работы с объектами класса Object
+ *
+ * @author Marina_Larionova
+ * @version 1.0.0
+ */
 public class ObjectBox {
     private List<Object> objectList = new ArrayList<>();
 
