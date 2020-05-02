@@ -4,25 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Класс с точкой входа. В ходе выполнения программы выбрасывает исключения и завершается с ошибкой.
+ *
  * @author Marina_Larionova
  * @version 1.0.0
- * <p>
- * Класс с точкой входа. В ходе выполнения программы выбрасывает исключения и завершается с ошибкой.
  */
 
 public class HelloWorld {
 
-    /**
-     * Главный метод программы
-     *
-     * @params args  - параметры командной строки
-     */
     public static void main(String[] args) {
-        /**
-         * Переменная list - список строковых значений
-         */
-        List<String> list = CreateArrayList();
-
+        List<String> list = createArrayList();
         /**
          * Вызов IndexOutOfBoundsException при получения элемента с индексом за пределами массива
          */
@@ -40,9 +31,9 @@ public class HelloWorld {
         } catch (NullPointerException e1) {
             System.out.println("NullPointerException");
             e1.printStackTrace();
-        /**
-         * Вызов CustomException с сообщением "Custom Message"
-         */
+            /**
+             * Вызов CustomException с сообщением "Custom Message"
+             */
         } finally {
             System.out.println("CustomException");
             throw new CustomException("Custom Message");
@@ -54,12 +45,8 @@ public class HelloWorld {
      *
      * @return list - список строк
      */
-    private static List<String> CreateArrayList() {
-        /**
-         * Переменная list - список строковых значений
-         */
+    private static List<String> createArrayList() {
         List<String> list = new ArrayList<String>();
-
         for (int i = 0; i < 5; i++) {
             list.add(String.valueOf(i));
         }
