@@ -5,6 +5,9 @@ import java.util.Comparator;
 /**
  * Функциональный интерфейс, наследующий интерфейс Comparator<Person> и переопределяющий метод compare(Person o1, Person o2)
  * как дефолтный метод
+ *
+ * @author Marina_Larionova
+ * @version 1.0.0
  */
 public interface Sortable extends Comparator<Person> {
     /**

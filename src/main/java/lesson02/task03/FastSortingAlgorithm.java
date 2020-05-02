@@ -5,6 +5,8 @@ import java.util.List;
 /**
  * Класс, реализующий быструю сортировку списка объектов класса Person
  *
+ * @author Marina_Larionova
+ * @version 1.0.0
  * @see Sortable
  * @see Person
  */
@@ -16,7 +18,7 @@ public class FastSortingAlgorithm implements Sortable {
      * @param low             - нижний индекс списка
      * @param high            - верхний индекс списка
      */
-    public void SortPersonArrayList(List<Person> personArrayList, int low, int high) {
+    public void sortPersonArrayList(List<Person> personArrayList, int low, int high) {
         /**
          * Если нижний индекс становится больше верхнего, значит необходимо закончить сортировку
          */
@@ -58,9 +60,9 @@ public class FastSortingAlgorithm implements Sortable {
          * Повторные сортировки списка personArrayList, смена опорного элемента
          */
         if (low < j)
-            SortPersonArrayList(personArrayList, low, j);
+            sortPersonArrayList(personArrayList, low, j);
         if (high > i)
-            SortPersonArrayList(personArrayList, i, high);
+            sortPersonArrayList(personArrayList, i, high);
     }
 
 }

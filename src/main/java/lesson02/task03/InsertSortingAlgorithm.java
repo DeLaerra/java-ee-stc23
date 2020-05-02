@@ -5,17 +5,18 @@ import java.util.List;
 /**
  * Класс, реализующий сортировку вставками списка объектов класса Person
  *
+ * @author Marina_Larionova
+ * @version 1.0.0
  * @see Sortable
  * @see Person
  */
 public class InsertSortingAlgorithm implements Sortable {
-
     /**
      * Метод, реализующий сортировку вставками списка объектов класса Person
      *
      * @param personArrayList
      */
-    public void SortPersonArrayList(List<Person> personArrayList) {
+    public void sortPersonArrayList(List<Person> personArrayList) {
 /**
  * Цикл для прохода по элементам списка
  */
