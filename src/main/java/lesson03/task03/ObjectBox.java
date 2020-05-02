@@ -2,30 +2,29 @@ package lesson03.task03;
 
 import java.util.HashSet;
 import java.util.Set;
-
+/**
+ * Класс для работы с объектами класса Object
+ *
+ * @param <T> extends Number
+ * @author Marina_Larionova
+ * @version 1.0.0
+ */
 public class ObjectBox<T> {
-    protected Set<Object> objectSet = new HashSet<>();
+    final Set<Object> objectSet = new HashSet<>();
 
     public Set<Object> getObjectSet() {
         return objectSet;
     }
 
-    public void setObjectSet(Set<Object> objectSet) {
-        this.objectSet = objectSet;
-    }
-
-    public ObjectBox() {
-    }
-
-    void addObject(T object) {
+    public void addObject(T object) {
         objectSet.add(object);
     }
 
-    void deleteObject(T object) {
+    public void deleteObject(T object) {
         objectSet.remove(object);
     }
 
-    void dump() {
+    public void dump() {
         objectSet.forEach(obj-> System.out.print(obj + " "));
     }
 }

@@ -1,16 +1,30 @@
 package lesson03.task03;
 
 import java.util.*;
-
+/**
+ * Класс для работы с объектами класса Number и его наследников
+ *
+ * @param <T> extends Number
+ * @author Marina_Larionova
+ * @version 1.0.0
+ */
 public class MathBox<T extends Number> extends ObjectBox<Number> {
-
-    public MathBox(Number[] numbers) {
-        if (numbers.length == 0) throw new RuntimeException("Длина массива равна нулю!");
+    /**
+     * Конструктор, добавляющий объекты класса Number в коллекцию objectSet
+     * @param numbers - массив объектов класса Number и его наследников
+     * @throws RuntimeException
+     */
+    public MathBox(T[] numbers) {
         for (Number number : numbers) {
             objectSet.add(number.doubleValue());
         }
+        if (numbers.length == 0) throw new RuntimeException("Длина массива равна нулю!");
     }
-
+    /**
+     * Метод, суммирующий значение всех объектов массива. Т.к. объекты могут быть класса Number и наследников Number,
+     * выходное значение приводится к типу double
+     * @return summ
+     */
     double summator() {
         double summ = 0.0;
         for (Object object : objectSet) {
@@ -18,7 +32,10 @@ public class MathBox<T extends Number> extends ObjectBox<Number> {
         }
         return summ;
     }
-
+    /**
+     * Метод, выполняющий деление всех элементов коллекции objectSet на делитель split.
+     * @param split - делитель
+     */
     void splitter(int split) {
         Set<Number> tempSet = new HashSet<>(objectSet.size());
 
@@ -31,6 +48,10 @@ public class MathBox<T extends Number> extends ObjectBox<Number> {
         objectSet.addAll(tempSet);
     }
 
+    /**
+     * Метод, убирающий из колекции objectSet число del
+     * @param del - лишнее число
+     */
     void deleteInteger(int del) {
         Number number = (double) del;
         objectSet.removeIf(n -> n.equals(number));
@@ -69,9 +90,8 @@ public class MathBox<T extends Number> extends ObjectBox<Number> {
         mathBox.addObject(del);
         mathBox.deleteObject(del);
         mathBox.dump();
-
-
     }
+
 
     @Override
     public boolean equals(Object o) {
