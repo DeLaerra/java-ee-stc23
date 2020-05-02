@@ -3,14 +3,10 @@ package lesson03.task01;
 import java.util.*;
 
 public class MathBox {
-    private Set<Number> numbersHashSet = new HashSet<>();
+    private final Set<Number> numbersHashSet = new HashSet<>();
 
     public Set<Number> getNumbersHashSet() {
         return numbersHashSet;
-    }
-
-    public void setNumbersHashSet(Set<Number> numbersHashSet) {
-        this.numbersHashSet = numbersHashSet;
     }
 
 
