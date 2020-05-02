@@ -1,4 +1,0 @@
-/**
-@author Marina_Larionova
-    
-*/    
