@@ -27,9 +27,7 @@ public class Animal {
         this.uuid = UUID.randomUUID().toString();
         this.nickname = nickname;
         this.owner = owner;
-/**
- * Округление полученного значения веса weight до 2 знаков после запятой
- */
+ //Округление полученного значения веса weight до 2 знаков после запятой
         BigDecimal bd = new BigDecimal(Double.toString(weight));
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         this.weight = bd.doubleValue();

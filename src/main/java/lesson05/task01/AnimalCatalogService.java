@@ -3,6 +3,7 @@ package lesson05.task01;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Класс, содержащий методы для управления картотекой животных
@@ -23,18 +24,17 @@ public class AnimalCatalogService {
         Person owner;
         String name;
         int age;
-        String sex;
+        Sex sex;
         Random random = new Random();
         AnimalCatalogService animalCatalogService = new AnimalCatalogService();
-        /**
-         * Добавление в ANIMALS_LIST (основной список) животных со случайными значениями атрибутов
-         */
+
+//      Добавление в ANIMALS_LIST (основной список) животных со случайными значениями атрибутов
         for (int i = 0; i < 10000; i++) {
             name = RandomStringUtils.randomAlphabetic(4, 10).toLowerCase();
             name = name.substring(0, 1).toUpperCase() + name.substring(1);
             age = random.nextInt(50) + 20;
-            if (Math.round(Math.random()) == 0) sex = "мужской";
-            else sex = "женский";
+            if (Math.round(Math.random()) == 0) sex = Sex.MAN;
+            else sex = Sex.WOMAN;
             owner = new Person(name, age, sex);
 
             nickname = RandomStringUtils.randomAlphabetic(2, 4).toLowerCase();
@@ -43,10 +43,10 @@ public class AnimalCatalogService {
 
             animal = new Animal(nickname, owner, weight);
             Animal.getAnimalsList().add(animal);
-            /**
-             * Добавление в ANIMALS_MAP для быстрого поиска животных по ключу-кличке (nickname),
-             * в качестве значения передается список животных с одинаковой кличкой
-             */
+
+/*          Добавление в ANIMALS_MAP для быстрого поиска животных по ключу-кличке (nickname),
+            в качестве значения передается список животных с одинаковой кличкой */
+
             if (Animal.getAnimalsMap().containsKey(nickname)) {
                 List<Animal> tempList = Animal.getAnimalsMap().get(nickname);
                 tempList.add(animal);
@@ -57,9 +57,7 @@ public class AnimalCatalogService {
                 Animal.getAnimalsMap().put(nickname, animalList);
             }
         }
-        /**
-         * Сортировка списка ANIMALS_LIST
-         */
+//      Сортировка списка ANIMALS_LIST
         sortAnimals();
     }
 
@@ -70,9 +68,15 @@ public class AnimalCatalogService {
      * @throws RuntimeException
      */
     public void addNewAnimal(Animal newAnimal) throws RuntimeException {
-        if (Animal.getAnimalsList().contains(newAnimal)) throw new RuntimeException("Данное животное уже добавлено!");
+        if (Animal.getAnimalsList().contains(newAnimal) &&
+                Animal.getAnimalsMap().entrySet()
+                        .stream()
+                        .anyMatch(value -> value.getValue().contains(newAnimal)))
+            throw new RuntimeException("Данное животное уже добавлено!");
         else {
-            Animal.getAnimalsList().add(newAnimal);
+            if (!Animal.getAnimalsList().contains(newAnimal)) {
+                Animal.getAnimalsList().add(newAnimal);
+            }
 
             if (Animal.getAnimalsMap().containsKey(newAnimal.getNickname())) {
                 List<Animal> tempList = Animal.getAnimalsMap().get(newAnimal.getNickname());
@@ -105,12 +109,21 @@ public class AnimalCatalogService {
     /**
      * Метод для изменения данных животного по UUID
      *
-     * @param uuid     - UUID, по которому происходит поиск нужного животного в списке ANIMALS_LIST
-     * @param nickname - новая кличка
-     * @param weight   - новый вес
-     * @param owner    - новый владелец
+     * @param uuid        - UUID, по которому происходит поиск нужного животного в списке ANIMALS_LIST
+     * @param newNickname - новая кличка
+     * @param weight      - новый вес
+     * @param owner       - новый владелец
      */
-    public void changeAnimalData(String uuid, String nickname, double weight, Person owner) {
+    public void changeAnimalData(String uuid, String newNickname, double weight, Person owner) {
+        String oldNickname = Animal.getAnimalsList()
+                .stream()
+                .filter(animal -> animal.getUuid().equals(uuid))
+                .findFirst().get().getNickname();
+        Animal changedAnimal = Animal.getAnimalsList()
+                .stream()
+                .filter(animal -> animal.getUuid().equals(uuid))
+                .findFirst().get();
+
         if (Animal.getAnimalsList()
                 .stream()
                 .anyMatch(animal -> animal.getUuid().equals(uuid))) {
@@ -118,7 +131,7 @@ public class AnimalCatalogService {
                     .stream()
                     .filter(animal -> animal.getUuid().equals(uuid))
                     .forEach(animal -> {
-                        animal.setNickname(nickname);
+                        animal.setNickname(newNickname);
                         animal.setWeight(weight);
                         animal.setOwner(owner);
                     });
@@ -128,6 +141,18 @@ public class AnimalCatalogService {
                     .stream()
                     .filter(animal -> animal.getUuid().equals(uuid))
                     .forEach(System.out::println);
+
+//          Удаляем животное с новой кличкой из того значения ANIMALS_MAP, где ключом является старая кличка
+            List<Animal> oldAnimalList = Animal.getAnimalsMap().get(oldNickname);
+            if (oldAnimalList.size() > 1) {
+                oldAnimalList.removeIf(animal -> animal.getUuid().equals(uuid));
+                Animal.getAnimalsMap().put(oldNickname, oldAnimalList);
+            } else {
+                Animal.getAnimalsMap().entrySet().removeIf(entry -> entry.getKey().equals(oldNickname));
+            }
+
+            addNewAnimal(changedAnimal);
+
         } else System.out.println("Животного с UUID " + uuid + " нет в базе");
     }
 

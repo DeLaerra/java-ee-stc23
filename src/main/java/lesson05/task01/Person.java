@@ -12,13 +12,12 @@ import java.util.Objects;
 public class Person {
     private String name;
     private int age;
-    private String sex;
+    private Sex sex;
 
-    public Person(String name, int age, String sex) {
+    public Person(String name, int age, Sex sex) {
         this.name = name;
         this.age = age;
-        if (sex.equals("мужской") || sex.equals("женский")) this.sex = sex;
-        else throw new IllegalArgumentException("Укажите верный пол (мужской/женский)!");
+        this.sex = sex;
     }
 
     public String getName() {
@@ -37,12 +36,12 @@ public class Person {
         this.age = age;
     }
 
-    public String getSex() {
+    public Sex getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
-        if (sex.equals("мужской") || sex.equals("женский")) this.sex = sex;
+    public void setSex(Sex sex) {
+        this.sex = sex;
     }
 
     @Override
