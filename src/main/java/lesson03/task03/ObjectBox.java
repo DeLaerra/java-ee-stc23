@@ -2,6 +2,7 @@ package lesson03.task03;
 
 import java.util.HashSet;
 import java.util.Set;
+
 /**
  * Класс для работы с объектами класса Object
  *
@@ -10,9 +11,9 @@ import java.util.Set;
  * @version 1.0.0
  */
 public class ObjectBox<T> {
-    final Set<Object> objectSet = new HashSet<>();
+    Set<T> objectSet = new HashSet<>();
 
-    public Set<Object> getObjectSet() {
+    public Set<T> getObjectSet() {
         return objectSet;
     }
 
@@ -25,6 +26,6 @@ public class ObjectBox<T> {
     }
 
     public void dump() {
-        objectSet.forEach(obj-> System.out.print(obj + " "));
+        objectSet.forEach(obj -> System.out.print(obj + " "));
     }
 }

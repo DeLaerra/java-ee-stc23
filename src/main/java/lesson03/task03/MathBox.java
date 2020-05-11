@@ -1,6 +1,7 @@
 package lesson03.task03;
 
 import java.util.*;
+
 /**
  * Класс для работы с объектами класса Number и его наследников
  *
@@ -8,90 +9,129 @@ import java.util.*;
  * @author Marina_Larionova
  * @version 1.0.0
  */
-public class MathBox<T extends Number> extends ObjectBox<Number> {
+public class MathBox<T extends Number> extends ObjectBox {
     /**
      * Конструктор, добавляющий объекты класса Number в коллекцию objectSet
+     *
      * @param numbers - массив объектов класса Number и его наследников
      * @throws RuntimeException
      */
     public MathBox(T[] numbers) {
-        for (Number number : numbers) {
-            objectSet.add(number.doubleValue());
+        for (T number : numbers) {
+            addObject(number);
         }
         if (numbers.length == 0) throw new RuntimeException("Длина массива равна нулю!");
     }
+
     /**
-     * Метод, суммирующий значение всех объектов массива. Т.к. объекты могут быть класса Number и наследников Number,
+     * Метод для добавления объектов класса Number в коллекцию objectSet
+     *
+     * @param obj
+     */
+    @Override
+    public void addObject(Object obj) {
+        if (obj instanceof Number) {
+            super.addObject(obj);
+        } else throw new ClassCastException("Это не Number!");
+    }
+
+    /**
+     * Метод для удаления объектов класса Number в коллекцию objectSet
+     *
+     * @param obj
+     */
+    @Override
+    public void deleteObject(Object obj) {
+        if (obj instanceof Number) {
+            super.deleteObject(obj);
+        } else throw new ClassCastException("Это не Number!");
+    }
+
+    /**
+     * Метод, суммирующий значения всех объектов массива. Т.к. объекты могут быть класса Number и наследников Number,
      * выходное значение приводится к типу double
+     *
      * @return summ
      */
     double summator() {
         double summ = 0.0;
         for (Object object : objectSet) {
-            summ = summ + (double) object;
+            summ = summ + ((Number) object).doubleValue();
         }
         return summ;
     }
+
     /**
      * Метод, выполняющий деление всех элементов коллекции objectSet на делитель split.
+     *
      * @param split - делитель
      */
-    void splitter(int split) {
-        Set<Number> tempSet = new HashSet<>(objectSet.size());
+    void splitter(double split) {
+        Set<Object> tempSet = new HashSet<>(objectSet.size());
 
-        Iterator<Object> it = objectSet.iterator();
-        while (it.hasNext()) {
-            tempSet.add((double) it.next() / split);
-            it.remove();
+        for (Object obj : objectSet) {
+            if (obj instanceof Byte || obj instanceof Short || obj instanceof Integer) {
+                tempSet.add(((Number) obj).intValue() / split);
+            } else if (obj instanceof Double || obj instanceof Float) {
+                tempSet.add(((Number) obj).doubleValue() / split);
+            } else if (obj instanceof Long) {
+                tempSet.add(((Number) obj).longValue() / split);
+            }
         }
-
-        objectSet.addAll(tempSet);
+        objectSet = tempSet;
     }
 
     /**
-     * Метод, убирающий из колекции objectSet число del
+     * Метод, убирающий из колекции objectSet целое число del
+     *
      * @param del - лишнее число
      */
     void deleteInteger(int del) {
-        Number number = (double) del;
-        objectSet.removeIf(n -> n.equals(number));
+        objectSet.removeIf(n -> n.equals(del));
     }
 
     public static void main(String[] args) {
-        int del = 1;
+        int delInt = 1;
+        Double delDouble = 1.0;
         int split = 2;
-        Object object = del;
+        Object object = new Object();
         Number[] numbers = new Number[10];
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             numbers[i] = i;
+            numbers[i + 5] = (double) i;
         }
 
         MathBox<Number> mathBox = new MathBox<>(numbers);
-
         System.out.println("Изначальная коллекция:");
         mathBox.dump();
         System.out.println();
 
-        System.out.println("Сумма всех компонентов коллекции: " + mathBox.summator());
+        mathBox.deleteInteger(delInt);
+        System.out.println("После удаления целого числа " + delInt + ":");
+        mathBox.dump();
+        System.out.println();
+
+//  Методы класса ObjectBox.
+//  Метод addObject не работет для Object object, но работает для int delInt
+//      mathBox.addObject(object);
+        mathBox.deleteObject(delDouble);
+        System.out.println("После удаления числа " + delDouble + ":");
+        mathBox.dump();
+        System.out.println();
+
+        mathBox.addObject(delDouble);
+        System.out.println("После добавления числа " + delDouble + ":");
+        mathBox.dump();
+        System.out.println();
 
         mathBox.splitter(split);
         System.out.println("После деления на " + split + ":");
-        System.out.println(mathBox.objectSet);
-
-        mathBox.deleteInteger(del);
-        System.out.println("После удаления числа " + del + ":");
-        System.out.println(mathBox.objectSet);
-/**
- * Методы класса ObjectBox.
- * Метод addObject не работет для Object object, но работает для int del
- */
-//        mathBox.addObject(object);
-        mathBox.addObject(del);
-        mathBox.deleteObject(del);
         mathBox.dump();
-    }
+        System.out.println();
 
+        System.out.println("Сумма всех компонентов коллекции: " + mathBox.summator());
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -113,4 +153,3 @@ public class MathBox<T extends Number> extends ObjectBox<Number> {
                 '}';
     }
 }
-
