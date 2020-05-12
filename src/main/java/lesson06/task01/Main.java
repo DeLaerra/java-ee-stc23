@@ -14,9 +14,8 @@ public class Main {
         FileReader fileReader = new FileReader();
 
         try {
-            fileReader.readInputFile(fileReader.pathInputFile);
-            fileReader.textList.forEach(System.out::println);
-            fileReader.saveResultFile(fileReader.pathResultFile);
+            fileReader.readInputFile(fileReader.getPathInputFile());
+            fileReader.saveResultFile(fileReader.getPathResultFile());
 
         } catch (IOException e) {
             e.printStackTrace();

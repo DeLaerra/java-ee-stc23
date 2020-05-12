@@ -9,15 +9,35 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Класс, обрабатывающий исходный текстовой файл и сохраняющий значения в другой текстовой файл.
+ * Класс, обрабатывающий исходный текстовый файл и сохраняющий значения в другой текстовый файл.
  *
  * @author Marina_Larionova
  * @version 1.0.0
  */
 public class FileReader {
-    Path pathInputFile = Paths.get("src/main/resources/lesson06/task01/text.txt");
-    Path pathResultFile = Paths.get("src/main/resources/lesson06/task01/result.txt");
-    List<String> textList = new ArrayList<>();
+    private Path pathInputFile = Paths.get("src/main/resources/lesson06/task01/text.txt");
+    private Path pathResultFile = Paths.get("src/main/resources/lesson06/task01/result.txt");
+    private List<String> textList = new ArrayList<>();
+
+    public Path getPathInputFile() {
+        return pathInputFile;
+    }
+
+    public Path getPathResultFile() {
+        return pathResultFile;
+    }
+
+    public List<String> getTextList() {
+        return textList;
+    }
+
+    public void setPathInputFile(Path pathInputFile) {
+        this.pathInputFile = pathInputFile;
+    }
+
+    public void setPathResultFile(Path pathResultFile) {
+        this.pathResultFile = pathResultFile;
+    }
 
     /**
      * Метод считывает строки из исходного файла в список textList
