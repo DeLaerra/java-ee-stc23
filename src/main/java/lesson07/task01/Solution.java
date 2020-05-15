@@ -1,10 +1,11 @@
 package lesson07.task01;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Класс, вычисляющий факториалы массива случайных чисел с помощью пула потоков.
@@ -32,28 +33,45 @@ public class Solution {
     /**
      * Метод, вычисляющий факториалы массива случайных чисел с помощью пула потоков
      */
-    public void calculateFactorials() {
-        ExecutorService es = Executors.newCachedThreadPool();
+    public List<Future<BigInteger>> calculateFactorials() {
+        ExecutorService executorService = Executors.newFixedThreadPool(randomNumbers.length);
+        List<Callable<BigInteger>> tasks = new ArrayList<>();
+        List<Future<BigInteger>> answers = new ArrayList<>();
 
-        for (int randomNumber : randomNumbers) {
-            Factorial factorial = new Factorial(randomNumber);
-            Thread t = new Thread(factorial);
-            es.execute(t);
-        }
+        Arrays.stream(randomNumbers).forEach(n -> tasks.add(new Factorial(n)));
 
         try {
-            es.shutdown();
-            es.awaitTermination(5, TimeUnit.SECONDS);
+            answers = executorService.invokeAll(tasks);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        try {
+            executorService.shutdown();
+            if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException ex) {
+            executorService.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+
+        return answers;
     }
 
     public static void main(String[] args) {
         Solution solution = new Solution();
         solution.createRandomArray();
         System.out.println(Arrays.toString(solution.getRandomNumbers()));
-        solution.calculateFactorials();
+
+        solution.calculateFactorials().forEach(f -> {
+            try {
+                System.out.println(f.get());
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+
         System.out.println(Factorial.getCacheMap());
     }
 }

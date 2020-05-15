@@ -2,6 +2,7 @@ package lesson07.task01;
 
 import java.math.BigInteger;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -10,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Marina_Larionova
  * @version 1.0.0
  */
-public class Factorial implements Runnable {
+public class Factorial implements Callable {
     private final int n;
     private static ConcurrentHashMap<Integer, BigInteger> cacheMap = new ConcurrentHashMap<>();
 
@@ -48,12 +49,10 @@ public class Factorial implements Runnable {
     }
 
     /**
-     * Метод, выполняющийся при запуске потока, считающий факториалы и выводящий значения на экран
+     * Метод, выполняющийся при запуске потока, считающий факториалы и возвращающий значения
      */
     @Override
-    public void run() {
-        Factorial factorial = new Factorial(n);
-        BigInteger calculatedFactorial = factorial.calculateFactorial(n);
-        System.out.println(calculatedFactorial);
+    public BigInteger call() throws Exception {
+        return this.calculateFactorial(n);
     }
 }
