@@ -1,7 +1,6 @@
 package lesson07.task01;
 
 import java.math.BigInteger;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,20 +10,24 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Marina_Larionova
  * @version 1.0.0
  */
-public class Factorial implements Callable {
-    private final int n;
-    private static ConcurrentHashMap<Integer, BigInteger> cacheMap = new ConcurrentHashMap<>();
+public class Factorial implements Callable<BigInteger> {
+    private final int VALUE;
+    private static final ConcurrentHashMap<Integer, BigInteger> CACHE_MAP = new ConcurrentHashMap<>();
 
-    public static Map<Integer, BigInteger> getCacheMap() {
-        return cacheMap;
-    }
-
-    public Factorial(int n) {
-        this.n = n;
+    public Factorial(int VALUE) {
+        this.VALUE = VALUE;
     }
 
     /**
-     * Метод, вычисляющий факториалы и добавляющий уже вычисленные значения в коллекцию cacheMap
+     * Метод, выполняющийся при запуске потока, считающий факториалы и возвращающий значения
+     */
+    @Override
+    public BigInteger call() throws Exception {
+        return this.calculateFactorial(VALUE);
+    }
+
+    /**
+     * Метод, вычисляющий факториалы и добавляющий уже вычисленные значения в коллекцию CACHE_MAP
      *
      * @param value - значение, для которого необходимо вычислить факториал
      * @return факториал
@@ -34,25 +37,17 @@ public class Factorial implements Callable {
         if (value == 0) {
             return factorial;
         } else if (value >= 1) {
-            if (cacheMap.get(value) != null) {
-                return cacheMap.get(value);
+            if (CACHE_MAP.get(value) != null) {
+                return CACHE_MAP.get(value);
             } else {
                 for (int i = 1; i <= value; i++) {
                     factorial = factorial.multiply(BigInteger.valueOf(i));
-                    cacheMap.put(i, factorial);
+                    CACHE_MAP.put(i, factorial);
                 }
                 return factorial;
             }
         } else {
             return BigInteger.valueOf(-1);
         }
-    }
-
-    /**
-     * Метод, выполняющийся при запуске потока, считающий факториалы и возвращающий значения
-     */
-    @Override
-    public BigInteger call() throws Exception {
-        return this.calculateFactorial(n);
     }
 }
