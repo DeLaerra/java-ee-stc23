@@ -1,10 +1,11 @@
 package lesson15;
 
 import lesson15.pojo.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.sql.*;
-import java.util.Optional;
+import java.util.Arrays;
 
 /**
  * Класс для обслуживания БД blog_user
@@ -13,28 +14,20 @@ import java.util.Optional;
  * @version 1.0.0
  */
 public class BlogDBService {
-    private Connection connection;
     private static final String SQL_INSERT_USER = "INSERT INTO blog_user (uuid, password, nickname, name, age, sex, email, moderator) " +
             "VALUES(?,?,?,?,?,?,?,?)";
     private static final String SQL_UPDATE_USER_NAME = "UPDATE blog_user SET name = ? WHERE uuid = ?";
     private static final String SQL_SELECT_USER = "SELECT * FROM blog_user WHERE uuid = ?";
-
-    /**
-     * Метод для подключения к БД
-     *
-     * @throws SQLException
-     * @throws IOException
-     */
-    public void connectToDatabase() throws SQLException, IOException {
-        connection = BlogDBConnector.getConnection();
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(BlogDBService.class);
 
     /**
      * Метод для добавления нового пользователя в БД
      *
      * @param newUser - новый пользователь
      */
-    public void insertNewUser(User newUser) {
+    public void addNewUser(User newUser) {
+        LOGGER.info("Добавление нового пользователя: "  + newUser.toString());
+        Connection connection = BlogDBConnector.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER)) {
             preparedStatement.setString(1, newUser.getUuid());
             preparedStatement.setString(2, newUser.getPassword());
@@ -45,8 +38,12 @@ public class BlogDBService {
             preparedStatement.setString(7, newUser.getEmail());
             preparedStatement.setBoolean(8, newUser.isModerator());
             preparedStatement.executeUpdate();
+            LOGGER.info("Пользователь " + newUser.toString() + " добавлен.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Попытка добавления нового пользователя неудачна!", e);
+            LOGGER.trace("", e);
+        } finally {
+            BlogDBConnector.disconnectFromDatabase(connection);
         }
     }
 
@@ -56,12 +53,15 @@ public class BlogDBService {
      * @param users - массив пользователей
      * @throws SQLException
      */
-    public void insertUsers(User... users) throws SQLException {
+    public void addUsers(User... users) throws SQLException {
         if (users.length < 500) {
+            Connection connection = BlogDBConnector.getConnection();
+            LOGGER.warn("Добавление новых пользователей. Количество пользователей: " + users.length);
             try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER)) {
                 connection.setAutoCommit(false);
                 connection.rollback();
                 for (int i = 0; i < users.length; i++) {
+                    LOGGER.debug("Добавление пользователя: " + users[i].toString());
                     preparedStatement.setString(1, users[i].getUuid());
                     preparedStatement.setString(2, users[i].getPassword());
                     preparedStatement.setString(3, users[i].getNickname());
@@ -74,12 +74,20 @@ public class BlogDBService {
                 }
                 preparedStatement.executeBatch();
                 connection.commit();
+                Arrays.stream(users).forEach(x ->LOGGER.info("Добавлен пользователь:" + x.toString()));
             } catch (SQLException e) {
                 connection.rollback();
+                LOGGER.error("Попытка добавления новых пользователей неудачна!", e);
+                LOGGER.trace("", e);
                 e.printStackTrace();
+            } finally {
+                BlogDBConnector.disconnectFromDatabase(connection);
             }
         } else {
-            throw new IllegalArgumentException("Слишком много запросов, укажите меньше пользователей!");
+            IllegalArgumentException e = new IllegalArgumentException("Слишком много запросов, укажите меньше пользователей!");
+            LOGGER.error("",e);
+            LOGGER.trace("", e);
+            throw e;
         }
     }
 
@@ -92,11 +100,13 @@ public class BlogDBService {
      */
     public void editUserName(User user, String newName) throws SQLException {
         Savepoint beforeUpdateSaving = null;
+        Connection connection = BlogDBConnector.getConnection();
+        LOGGER.warn("Изменение имени пользователя " + user.toString() + " на " + newName);
         try (PreparedStatement psUpdate = connection.prepareStatement(SQL_UPDATE_USER_NAME)) {
             connection.setAutoCommit(false);
             connection.rollback();
-            System.out.println("До изменения:");
-            selectUserByUuid(user.getUuid());
+            LOGGER.info("Данные пользователя до изменения:");
+            selectUserByUuid(user.getUuid(), connection);
             beforeUpdateSaving = connection.setSavepoint();
 
             psUpdate.setString(1, newName);
@@ -104,11 +114,14 @@ public class BlogDBService {
             psUpdate.executeUpdate();
             connection.commit();
 
-            System.out.println("После изменения:");
-            selectUserByUuid(user.getUuid());
+            LOGGER.info("Данные пользователя после изменения:");
+            selectUserByUuid(user.getUuid(), connection);
         } catch (SQLException e) {
             connection.rollback(beforeUpdateSaving);
-            e.printStackTrace();
+            LOGGER.error("Попытка изменения имени пользователя  неудачна", e);
+            LOGGER.trace("", e);
+        } finally {
+            BlogDBConnector.disconnectFromDatabase(connection);
         }
     }
 
@@ -117,7 +130,7 @@ public class BlogDBService {
      *
      * @param uuid - критерий выбора
      */
-    private void selectUserByUuid(String uuid) {
+    private void selectUserByUuid(String uuid, Connection connection) {
         try (PreparedStatement psSelect = connection.prepareStatement(SQL_SELECT_USER)) {
             psSelect.setString(1, uuid);
             ResultSet resultSet = psSelect.executeQuery();
@@ -128,26 +141,14 @@ public class BlogDBService {
                 String sex = resultSet.getString(6);
                 String email = resultSet.getString(7);
                 boolean isModerator = resultSet.getBoolean(8);
-                System.out.println(uuid + ", " + nickname + ", " + name + ", " + age + ", " + sex + ", " + email + ", " + isModerator);
+                LOGGER.info("Пользователь: " + uuid + ", " + nickname + ", " + name + ", " + age + ", " + sex + ", " +
+                        email + ", " + isModerator);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Выполнение запроса SQL_SELECT закончилось неудачей", e);
+            LOGGER.trace("", e);
         }
     }
 
-    /**
-     * Метод для отключения от БД
-     *
-     * @throws SQLException
-     * @throws IOException
-     */
-    public void disconnectFromDatabase() {
-        Optional.ofNullable(connection).ifPresent(connection1 -> {
-            try {
-                connection1.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
+
 }
