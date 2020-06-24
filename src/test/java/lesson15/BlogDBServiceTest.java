@@ -2,8 +2,10 @@ package lesson15;
 
 import lesson15.pojo.Sex;
 import lesson15.pojo.User;
+import lesson15.pojo.UserBuilder;
 import org.junit.*;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class BlogDBServiceTest {
@@ -13,35 +15,29 @@ public class BlogDBServiceTest {
     @BeforeClass
     public static void setUp() throws Exception {
         blogDBService = new BlogDBService();
-        blogDBService.connectToDatabase();
-
     }
 
     @Test
     public void insertNewUser() {
-        user = new User("pwd", "Rick", "Rick Sanchez", 70, Sex.MALE, "sanchez@mail.com");
-        blogDBService.insertNewUser(user);
+        user = new UserBuilder().setPassword("pwd").setNickname("Rick").setName("Rick Sanchez").setAge(70).setSex(Sex.MALE).setEmail("sanchez@mail.com").createUser();
+        blogDBService.addNewUser(user);
     }
 
     @Test
     public void insertUsers() throws SQLException {
         User[] users = new User[10];
         for (int i = 0; i < users.length; i++) {
-            user = new User("123", "TestUser" + i, "TestName" + i, i * 10, Sex.MALE, "test@mail.com");
+            user = new UserBuilder().setPassword("123").setNickname("TestUser" + i).setName("TestName" + i).setAge(i * 10).setSex(Sex.MALE).setEmail("test@mail.com").createUser();
             users[i] = user;
         }
-        blogDBService.insertUsers(users);
+        blogDBService.addUsers(users);
     }
 
     @Test
     public void editUserName() throws SQLException {
-        user = new User("pwd", "Beth", "Beth Sanchez", 35, Sex.FEMALE, "bsmith@mail.com");
-        blogDBService.insertNewUser(user);
+        user = new UserBuilder().setPassword("pwd").setNickname("Beth").setName("Beth Sanchez").setAge(35).setSex(Sex.FEMALE).setEmail("bsmith@mail.com").createUser();
+        blogDBService.addNewUser(user);
         blogDBService.editUserName(user, "Beth Smith");
     }
 
-    @AfterClass
-    public static void setDown() {
-        blogDBService.disconnectFromDatabase();
-    }
 }

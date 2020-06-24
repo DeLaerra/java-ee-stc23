@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="XMLConfig" monitorInterval="30" >
+    <Appenders>
+        <Console name="STDOUT">
+            <Layout type="PatternLayout" pattern="%m %n" />
+        </Console>
+        <RollingFile name="rollingFile_system"
+                     fileName="logs/lesson15/log4j2_system.log"
+                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d %p %C{1} [%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval = "1" />
+                <SizeBasedTriggeringPolicy
+                        size="250 MB" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="rollingFile_security"
+                     fileName="logs/lesson15/log4j2_security.log"
+                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d %p %C{1} [%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval = "1" />
+                <SizeBasedTriggeringPolicy
+                        size="250 MB" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="rollingFile_business"
+                     fileName="logs/lesson15/log4j2_business.log"
+                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <ThresholdFilter level="WARN"  onMatch="DENY"   onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="ERROR" onMatch="DENY"   onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="FATAL" onMatch="DENY"   onMismatch="NEUTRAL"/>
+            <PatternLayout>
+                <Pattern>%d %p %C{1} [%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval = "1" />
+                <SizeBasedTriggeringPolicy
+                        size="250 MB" />
+            </Policies>
+        </RollingFile>
+        <JDBC name="blog_db" tableName="logs">
+            <DriverManager connectionString="jdbc:postgresql://localhost:5432/blog_db"
+                           driverClassName="org.postgresql.Driver"
+                           username="Rin"
+                           password="Rin" />
+            <Column name="log_id" pattern="%u" isUnicode="false" />
+            <Column name="log_date" isEventTimestamp="true" />
+            <Column name="logger" pattern="%logger" isUnicode="false" />
+            <Column name="log_level" pattern="%level" isUnicode="false" />
+            <Column name="message_text" pattern="%m" isUnicode="false" />
+            <Column name="exception" pattern="%throwable " isUnicode="false" />
+        </JDBC>
+    </Appenders>
+    <Loggers>
+        <Root level="ALL">
+            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="rollingFile_system" />
+            <AppenderRef ref="rollingFile_security" level="INFO" />
+            <AppenderRef ref="rollingFile_business" level="INFO" />
+            <AppenderRef ref="blog_db" />
+        </Root>
+    </Loggers>
+</Configuration>

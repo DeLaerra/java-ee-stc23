@@ -52,10 +52,6 @@ public class User {
         return sex;
     }
 
-    public void setSex(Sex sex) {
-        this.sex = sex;
-    }
-
     public String getEmail() {
         return email;
     }
