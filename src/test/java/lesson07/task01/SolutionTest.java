@@ -1,7 +1,8 @@
 package lesson07.task01;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +10,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
 
 public class SolutionTest {
     private static List<Integer> randomList = new ArrayList<>();
 
-    @BeforeClass
+    @BeforeAll
     public static void shouldCreateRandomList() {
         randomList = ThreadLocalRandom.current()
                 .ints(10, 0, 16)
