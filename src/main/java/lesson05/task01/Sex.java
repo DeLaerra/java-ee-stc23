@@ -1,8 +1,8 @@
 package lesson05.task01;
 
 public enum Sex {
-    MAN("мужской"),
-    WOMAN("женский");
+    MAN("man"),
+    WOMAN("woman");
 
     private final String sex;
 

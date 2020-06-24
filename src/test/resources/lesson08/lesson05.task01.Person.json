@@ -1,0 +1,7 @@
+{
+	"name": "John Smith",
+	"age": "27",
+	"sex": {
+	"sex": "man"
+	}
+}
