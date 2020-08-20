@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <context-param>
+        <param-name>isDao</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <servlet>
+        <servlet-name>errorHandler</servlet-name>
+        <servlet-class>lesson22.servlets.AppErrorHandler</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>errorHandler</servlet-name>
+        <url-pattern>/error</url-pattern>
+    </servlet-mapping>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/error</location>
+    </error-page>
+
+<!--    <listener>-->
+<!--        <listener-class>lesson22.servlets.AppContextListener</listener-class>-->
+<!--    </listener>-->
+<!--    <servlet>-->
+<!--        <servlet-name>Articles</servlet-name>-->
+<!--        <servlet-class>lesson22.servlets.AllArticlesServlet</servlet-class>-->
+<!--        <load-on-startup>1</load-on-startup>-->
+<!--    </servlet>-->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>Articles</servlet-name>-->
+<!--        <url-pattern>/allarticles</url-pattern>-->
+<!--    </servlet-mapping>-->
+<!--    <servlet>-->
+<!--        <servlet-name>AddArticle</servlet-name>-->
+<!--        <servlet-class>lesson22.servlets.AddArticleServlet</servlet-class>-->
+<!--    </servlet>-->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>AddArticle</servlet-name>-->
+<!--        <url-pattern>/addarticle</url-pattern>-->
+<!--    </servlet-mapping>-->
+<!--    <servlet>-->
+<!--        <servlet-name>ShowArticle</servlet-name>-->
+<!--        <servlet-class>lesson22.servlets.AddArticleServlet</servlet-class>-->
+<!--    </servlet>-->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>ShowArticle</servlet-name>-->
+<!--        <url-pattern>/showarticle</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+    <!--    <filter>-->
+    <!--        <filter-name>logFilter</filter-name>-->
+    <!--        <filter-class>lesson22.servlets.LogFilter</filter-class>-->
+    <!--    </filter>-->
+
+    <!--    <filter-mapping>-->
+    <!--        <filter-name>logFilter</filter-name>-->
+    <!--        <url-pattern>/*</url-pattern>-->
+    <!--    </filter-mapping>-->
+
+    <jsp-config>
+        <taglib>
+            <taglib-uri>dateTag</taglib-uri>
+            <taglib-location>/WEB-INF/date.tld</taglib-location>
+        </taglib>
+    </jsp-config>
+
+
+</web-app>

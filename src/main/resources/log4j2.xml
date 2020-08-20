@@ -5,7 +5,7 @@
             <Layout type="PatternLayout" pattern="%m %n" />
         </Console>
         <RollingFile name="rollingFile_system"
-                     fileName="logs/lesson15/log4j2_system.log"
+                     fileName="${user.home}/log4j2_system.log"
                      filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout>
                 <Pattern>%d %p %C{1} [%t] %m%n</Pattern>
@@ -17,7 +17,7 @@
             </Policies>
         </RollingFile>
         <RollingFile name="rollingFile_security"
-                     fileName="logs/lesson15/log4j2_security.log"
+                     fileName="${user.home}/log4j2_security.log"
                      filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout>
                 <Pattern>%d %p %C{1} [%t] %m%n</Pattern>
@@ -29,7 +29,7 @@
             </Policies>
         </RollingFile>
         <RollingFile name="rollingFile_business"
-                     fileName="logs/lesson15/log4j2_business.log"
+                     fileName="${user.home}/log4j2_business.log"
                      filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
             <ThresholdFilter level="WARN"  onMatch="DENY"   onMismatch="NEUTRAL"/>
             <ThresholdFilter level="ERROR" onMatch="DENY"   onMismatch="NEUTRAL"/>

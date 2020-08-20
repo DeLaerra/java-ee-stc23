@@ -15,10 +15,10 @@ import java.util.Arrays;
  * @version 1.0.0
  */
 public class BlogDBService {
-    private static final String SQL_INSERT_USER = "INSERT INTO blog_user (uuid, password, nickname, name, age, sex, email, moderator) " +
+    private static final String SQL_INSERT_USER = "INSERT INTO blog_user (user_uuid, password, nickname, name, age, sex, email, moderator) " +
             "VALUES(?,?,?,?,?,?,?,?)";
-    private static final String SQL_UPDATE_USER_NAME = "UPDATE blog_user SET name = ? WHERE uuid = ?";
-    private static final String SQL_SELECT_USER = "SELECT * FROM blog_user WHERE uuid = ?";
+    private static final String SQL_UPDATE_USER_NAME = "UPDATE blog_user SET name = ? WHERE user_uuid = ?";
+    private static final String SQL_SELECT_USER = "SELECT * FROM blog_user WHERE user_uuid = ?";
     private static final Logger LOGGER = LoggerFactory.getLogger(BlogDBService.class);
     private BlogDBConnector blogDBConnector = BlogDBConnector.getInstance();
     private ResultSet resultSet;
